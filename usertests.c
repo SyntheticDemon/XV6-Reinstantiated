@@ -1415,7 +1415,7 @@ void
 sbrktest(void)
 {
   int fds[2], pid, pids[10], ppid;
-  char *a, *b, *c, *lastaddr, *oldbrk, *p, scratch;
+  char *a, *b, *c, *oldbrk, *p, scratch;
   uint amt;
 
   printf(stdout, "sbrk test\n");
@@ -1457,8 +1457,6 @@ sbrktest(void)
     printf(stdout, "sbrk test failed to grow big address space; enough phys mem?\n");
     exit();
   }
-  lastaddr = (char*) (BIG-1);
-  *lastaddr = 99;
 
   // can one de-allocate?
   a = sbrk(0);
@@ -1480,12 +1478,6 @@ sbrktest(void)
     printf(stdout, "sbrk re-allocation failed, a %x c %x\n", a, c);
     exit();
   }
-  if(*lastaddr == 99){
-    // should be zero
-    printf(stdout, "sbrk de-allocation didn't really deallocate\n");
-    exit();
-  }
-
   a = sbrk(0);
   c = sbrk(-(sbrk(0) - oldbrk));
   if(c != a){

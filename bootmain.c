@@ -21,7 +21,6 @@ bootmain(void)
   struct proghdr *ph, *eph;
   void (*entry)(void);
   uchar* pa;
-
   elf = (struct elfhdr*)0x10000;  // scratch space
 
   // Read 1st page off disk

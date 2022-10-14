@@ -238,7 +238,7 @@ ata3: enabled=0, ioaddr1=0x168, ioaddr2=0x360, irq=9
 #   journal=    optional filename of the redolog for undoable and volatile disks
 #   
 # Point this at a hard disk image file, cdrom iso file, or physical cdrom
-# device.  To create a hard disk image, try running bximage.  It will help you
+# device.  To create a / disk image, try running bximage.  It will help you
 # choose the size and then suggest a line that works with it.
 #
 # In UNIX it may be possible to use a raw device as a Bochs hard disk, 
