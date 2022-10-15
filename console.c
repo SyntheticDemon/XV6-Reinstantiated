@@ -14,6 +14,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "x86.h"
+#include "user.h"
 
 static void consputc(int);
 
@@ -190,6 +191,7 @@ void consputc(int c)
 }
 
 #define INPUT_BUF 128
+#define L_CMDS_COUNT 16
 struct
 {
   char buf[INPUT_BUF];
@@ -203,6 +205,7 @@ struct
 void consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
+  char ** cmd_memory=malloc(L_CMDS_COUNT*INPUT_BUF);
   acquire(&cons.lock);
   char current_buf[INPUT_BUF];
   while ((c = getc()) >= 0)
@@ -223,7 +226,7 @@ void consoleintr(int (*getc)(void))
         input.e--;
         removed_lines_count++; // find the real size of the command
       }
-      input.e = initial_input_e; 
+      input.e = initial_input_e;
       while (input.e != input.w &&
              input.buf[(input.e - 1) % INPUT_BUF] != '\n')
       {
@@ -235,10 +238,9 @@ void consoleintr(int (*getc)(void))
       {
         if (current_buf[i] != '\0')
         {
-          input.buf[i]=current_buf[i];
+          input.buf[i] = current_buf[i];
           consputc(current_buf[i]); // put the command's reverse in the buffer
           input.e++;
-          
         }
       }
       break;
@@ -260,12 +262,12 @@ void consoleintr(int (*getc)(void))
         consputc(BACKSPACE); // remove the old part of the command
         removed_count++;
       }
-      for (int i = 0; i < removed_count ; i++)
+      for (int i = 0; i < removed_count; i++)
       {
-        char temp_c=current_buf[removed_count-i-1];
-        if ((temp_c!='\0') &  !(('0' <= temp_c) &  (temp_c <= '9')))
+        char temp_c = current_buf[removed_count - i - 1];
+        if ((temp_c != '\0') & !(('0' <= temp_c) & (temp_c <= '9')))
         {
-          consputc(temp_c); // put the command without numbers 
+          consputc(temp_c); // put the command without numbers
           input.e++;
         }
       }
@@ -278,6 +280,8 @@ void consoleintr(int (*getc)(void))
         consputc(BACKSPACE);
       }
       break;
+    case '\x09': //TAB
+      consputc('a');
     case C('H'):
     case '\x7f': // Backspace
       if (input.e != input.w)
@@ -296,6 +300,7 @@ void consoleintr(int (*getc)(void))
         if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
         {
           input.w = input.e;
+          memset(current_buf, 0, INPUT_BUF); // ckear the buffer after commands
           wakeup(&input.r);
         }
       }

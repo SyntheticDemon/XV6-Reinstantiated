@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "user.h": "c",
+        "cstdio": "c",
+        "types.h": "c",
+        "new": "c",
+        "defs.h": "c",
+        "malloc.h": "c",
+        "fcntl.h": "c"
+    }
+}
