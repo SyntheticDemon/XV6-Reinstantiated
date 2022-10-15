@@ -14,7 +14,6 @@
 #include "mmu.h"
 #include "proc.h"
 #include "x86.h"
-#include "user.h"
 
 static void consputc(int);
 
@@ -200,12 +199,14 @@ struct
   uint e; // Edit index
 } input;
 
+
 #define C(x) ((x) - '@') // Control-x
 
 void consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
-  char ** cmd_memory=malloc(L_CMDS_COUNT*INPUT_BUF);
+  int commands_count =0;
+  // char cmd_memory[L_CMDS_COUNT][INPUT_BUF];
   acquire(&cons.lock);
   char current_buf[INPUT_BUF];
   while ((c = getc()) >= 0)
@@ -300,7 +301,16 @@ void consoleintr(int (*getc)(void))
         if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
         {
           input.w = input.e;
-          memset(current_buf, 0, INPUT_BUF); // ckear the buffer after commands
+          
+          // memset( cmd_memory[commands_count^L_CMDS_COUNT],0,INPUT_BUF);
+          // for (int j = 0; j < INPUT_BUF; j++)
+          // {
+          //   consputc(cmd_memory[commands_count % L_CMDS_COUNT][j] = current_buf[j]);
+            
+          // }
+          commands_count++;
+          memset(current_buf, 0, INPUT_BUF); // clear the buffer after commands
+          
           wakeup(&input.r);
         }
       }
