@@ -63,7 +63,6 @@ runcmd(struct cmd *cmd)
   struct listcmd *lcmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
-
   if(cmd == 0)
     exit();
 

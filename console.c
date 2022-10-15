@@ -200,6 +200,31 @@ consoleintr(int (*getc)(void))
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
       break;
+    case C('R'): // Reverse line.
+      char current_buf[INPUT_BUF];
+      int removed_lines_count = 0;
+      int initial_input_e=input.e;
+      while (input.e != input.w &&
+             input.buf[(input.e - 1) % INPUT_BUF] != '\n')
+      {
+        current_buf[removed_lines_count] = input.buf[(input.e - 1) % INPUT_BUF];
+        input.e--;
+        removed_lines_count++;
+      }
+      input.e=initial_input_e; // find the real size of the command
+      while (input.e != input.w &&
+             input.buf[(input.e - 1) % INPUT_BUF] != '\n')
+      {
+        input.e--;
+        consputc(BACKSPACE);
+        removed_lines_count++;
+      }
+      for (int i = 0; i < removed_lines_count-1; i++)
+      {
+        consputc(current_buf[i]);
+        input.e++;
+      }
+      break;
     case C('U'):  // Kill line.
       while(input.e != input.w &&
             input.buf[(input.e-1) % INPUT_BUF] != '\n'){
@@ -212,6 +237,7 @@ consoleintr(int (*getc)(void))
         input.e--;
         consputc(BACKSPACE);
       }
+      
       break;
     default:
       if(c != 0 && input.e-input.r < INPUT_BUF){
@@ -261,8 +287,9 @@ consoleread(struct inode *ip, char *dst, int n)
     }
     *dst++ = c;
     --n;
-    if(c == '\n')
+    if(c == '\n'){
       break;
+    }
   }
   release(&cons.lock);
   ilock(ip);
