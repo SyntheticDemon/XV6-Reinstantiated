@@ -265,8 +265,10 @@ void consoleintr(int (*getc)(void))
         char temp_c = current_buf[removed_count - i - 1];
         if ((temp_c != '\0') & !(('0' <= temp_c) & (temp_c <= '9')))
         {
-          consputc(temp_c); // put the command without numbers
-          input.e++;
+          if (temp_c!=' '){
+            consputc(temp_c); // put the command without numbers
+            input.e++;
+          }
         }
       }
       break;
@@ -287,9 +289,13 @@ void consoleintr(int (*getc)(void))
         int cur_similarity_count = 0;
         for (int j = 0; j < input.e-input.r; j++)
         {
-          if (cmd_memory[z][j] == input.buf[input.r+j])
-          {
-            cur_similarity_count=cur_similarity_count+1;
+          if (cmd_memory[z][j] == input.buf[input.r+j]){
+            if(input.buf[input.r + j] == ' '){
+              break;
+            }
+            {
+              cur_similarity_count = cur_similarity_count + 1;
+            }
           }
           if (max_similarity_count < cur_similarity_count)
           {
@@ -302,10 +308,11 @@ void consoleintr(int (*getc)(void))
       {
         if ((cmd_memory[max_similarity_count_index][i]!='\0') & 
         (input.buf[input.r+i]!=cmd_memory[max_similarity_count_index][i])){
+          input.buf[input.e] = cmd_memory[max_similarity_count][i];
           consputc(cmd_memory[max_similarity_count_index][i]);
-          input.buf[input.e]=cmd_memory[max_similarity_count][i];
-          input.e ++;
+          input.e++;
         }
+        
       }
     case C('H'):
     case '\x7f': // Backspace
@@ -325,11 +332,12 @@ void consoleintr(int (*getc)(void))
         if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
         {
           input.w = input.e;
-          for (int i = input.r; i < input.e; i++)
+          for (int i = input.r; i <= input.e; i++)
           {
             if (input.buf[i]!='\n'){
               cmd_memory[commands_count % L_CMDS_COUNT][i] = input.buf[i];
             }
+            
           }
           commands_count++;
 
