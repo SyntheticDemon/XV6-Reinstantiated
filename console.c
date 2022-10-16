@@ -191,6 +191,9 @@ void consputc(int c)
 
 #define INPUT_BUF 128
 #define L_CMDS_COUNT 16
+
+char cmd_memory[L_CMDS_COUNT][INPUT_BUF] = {0};
+
 struct
 {
   char buf[INPUT_BUF];
@@ -198,16 +201,14 @@ struct
   uint w; // Write index
   uint e; // Edit index
 } input;
-
+int commands_count = 0;
 
 #define C(x) ((x) - '@') // Control-x
 
 void consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
-  int commands_count =0;
   int removed_count = 0;
-  // char cmd_memory[L_CMDS_COUNT][INPUT_BUF];
   acquire(&cons.lock);
   char current_buf[INPUT_BUF];
   int initial_input_e = input.e;
@@ -277,8 +278,35 @@ void consoleintr(int (*getc)(void))
         consputc(BACKSPACE);
       }
       break;
-    case '\x09': //TAB
-      consputc('a');
+    case '\x09': // TAB //1. Search for the most simillar string reverse from the end of the cmd memory
+                 //  2. Put it up to display
+      int max_similarity_count = 0;
+      int max_similarity_count_index=0;
+      for (int z = L_CMDS_COUNT - 1; - 1 < z; z--)
+      {
+        int cur_similarity_count = 0;
+        for (int j = 0; j < input.e-input.r; j++)
+        {
+          if (cmd_memory[z][j] == input.buf[input.r+j])
+          {
+            cur_similarity_count=cur_similarity_count+1;
+          }
+          if (max_similarity_count < cur_similarity_count)
+          {
+            max_similarity_count = cur_similarity_count;
+            max_similarity_count_index = z;
+          }
+        }
+      }
+      for (int i = 0; i < INPUT_BUF; i++)
+      {
+        if ((cmd_memory[max_similarity_count_index][i]!='\0') & 
+        (input.buf[input.r+i]!=cmd_memory[max_similarity_count_index][i])){
+          consputc(cmd_memory[max_similarity_count_index][i]);
+          input.buf[input.e]=cmd_memory[max_similarity_count][i];
+          input.e ++;
+        }
+      }
     case C('H'):
     case '\x7f': // Backspace
       if (input.e != input.w)
@@ -297,16 +325,15 @@ void consoleintr(int (*getc)(void))
         if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF)
         {
           input.w = input.e;
-          
-          // memset( cmd_memory[commands_count^L_CMDS_COUNT],0,INPUT_BUF);
-          // for (int j = 0; j < INPUT_BUF; j++)
-          // {
-          //   consputc(cmd_memory[commands_count % L_CMDS_COUNT][j] = current_buf[j]);
-            
-          // }
+          for (int i = input.r; i < input.e; i++)
+          {
+            if (input.buf[i]!='\n'){
+              cmd_memory[commands_count % L_CMDS_COUNT][i] = input.buf[i];
+            }
+          }
           commands_count++;
-          memset(current_buf, 0, INPUT_BUF); // clear the buffer after commands
-          
+
+          memset(current_buf, '\0', INPUT_BUF); // clear the buffer after commands
           wakeup(&input.r);
         }
       }
