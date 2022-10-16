@@ -206,9 +206,11 @@ void consoleintr(int (*getc)(void))
 {
   int c, doprocdump = 0;
   int commands_count =0;
+  int removed_count = 0;
   // char cmd_memory[L_CMDS_COUNT][INPUT_BUF];
   acquire(&cons.lock);
   char current_buf[INPUT_BUF];
+  int initial_input_e = input.e;
   while ((c = getc()) >= 0)
   {
     switch (c)
@@ -218,14 +220,12 @@ void consoleintr(int (*getc)(void))
       doprocdump = 1;
       break;
     case C('R'): // Reverse line.
-      int removed_lines_count = 0;
-      int initial_input_e = input.e;
       while (input.e != input.w &&
              input.buf[(input.e - 1) % INPUT_BUF] != '\n')
       {
-        current_buf[removed_lines_count] = input.buf[(input.e - 1) % INPUT_BUF];
+        current_buf[removed_count] = input.buf[(input.e - 1) % INPUT_BUF];
         input.e--;
-        removed_lines_count++; // find the real size of the command
+        removed_count++; // find the real size of the command
       }
       input.e = initial_input_e;
       while (input.e != input.w &&
@@ -233,9 +233,8 @@ void consoleintr(int (*getc)(void))
       {
         input.e--;
         consputc(BACKSPACE); // remove the old part of the command
-        removed_lines_count++;
       }
-      for (int i = 0; i < removed_lines_count; i++)
+      for (int i = 0; i < removed_count; i++)
       {
         if (current_buf[i] != '\0')
         {
@@ -246,8 +245,6 @@ void consoleintr(int (*getc)(void))
       }
       break;
     case C('N'): // Replace Numbers.
-      int removed_count = 0;
-      int initial_edit_index = input.e;
       while (input.e != input.w &&
              input.buf[(input.e - 1) % INPUT_BUF] != '\n')
       {
@@ -255,13 +252,12 @@ void consoleintr(int (*getc)(void))
         input.e--;
         removed_count++;
       }
-      input.e = initial_edit_index; // find the real size of the command
+      input.e = initial_input_e; // find the real size of the command
       while (input.e != input.w &&
              input.buf[(input.e - 1) % INPUT_BUF] != '\n')
       {
         input.e--;
         consputc(BACKSPACE); // remove the old part of the command
-        removed_count++;
       }
       for (int i = 0; i < removed_count; i++)
       {
