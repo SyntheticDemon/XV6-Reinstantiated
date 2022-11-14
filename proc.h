@@ -9,7 +9,7 @@ struct cpu {
   int intena;                  // Were interrupts enabled before pushcli?
   struct proc *proc;           // The process running on this cpu or null
 };
-
+void add_to_call_array(int process_id,int sys_call);
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 

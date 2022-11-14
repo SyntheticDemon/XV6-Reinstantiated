@@ -461,9 +461,6 @@ int sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
-int sys_get_parent_pid(void){
-  return myproc()->parent->pid;
-}
 
 
 int sys_change_file_size(void)

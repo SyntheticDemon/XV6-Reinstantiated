@@ -11,6 +11,7 @@
         "file.h": "c",
         "fs.h": "c",
         "stat.h": "c",
-        "sleeplock.h": "c"
+        "sleeplock.h": "c",
+        "proc.h": "c"
     }
 }

@@ -6,6 +6,22 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#define sys_call_length 24
+#define MAX_PROCESS_COUNT 6000
+// Fetch the int at addr from the current process.
+int call_array[sys_call_length][6000] = {0};
+void add_to_call_array(int sys_call_id, int process_id)
+{
+  for (int i = 0; i < MAX_PROCESS_COUNT; i++)
+  {
+    if (call_array[sys_call_id][i] == 0)
+    {
+      // cprintf("process id : %d  sys call id: %d",process_id,sys_call_id);
+      call_array[sys_call_id][i] = process_id;
+      return;
+    }
+  }
+}
 
 int sys_fork(void)
 {
@@ -87,4 +103,31 @@ int sys_uptime(void)
 int sys_getyear(void)
 {
   return 1975;
+}
+
+void sys_getcallers(void)
+{
+  int sys_id;
+  if (argint(0, &sys_id) < 0)
+    return;
+  else
+  {
+    cprintf("Process's that have called the system call with id %d:", sys_id);
+    for (int i = 0; i < MAX_PROCESS_COUNT; i++)
+    {
+      if (call_array[sys_id][i] != 0)
+      {
+        cprintf("%d,", call_array[sys_id][i]);
+      }
+      else
+      {
+        cprintf("\n");
+        return;
+      }
+    }
+  }
+}
+int sys_get_parent_pid(void)
+{
+  return myproc()->parent->pid;
 }

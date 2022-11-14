@@ -39,4 +39,5 @@ void free(void*);
 int atoi(const char*);
 int getyear(void);
 int get_parent_pid(void);
+void getcallers(int sys_id);
 int change_file_size(const char* file_path ,int desired_size);
