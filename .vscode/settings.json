@@ -6,6 +6,11 @@
         "new": "c",
         "defs.h": "c",
         "malloc.h": "c",
-        "fcntl.h": "c"
+        "fcntl.h": "c",
+        "syscall.h": "c",
+        "file.h": "c",
+        "fs.h": "c",
+        "stat.h": "c",
+        "sleeplock.h": "c"
     }
 }

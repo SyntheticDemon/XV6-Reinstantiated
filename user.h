@@ -37,3 +37,5 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+int getyear(void);
+int change_file_size(const char* file_path ,int desired_size);
