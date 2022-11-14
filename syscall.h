@@ -22,3 +22,4 @@
 #define SYS_close  21
 #define SYS_getyear 22
 #define SYS_change_file_size 23
+#define SYS_get_parent_pid 24

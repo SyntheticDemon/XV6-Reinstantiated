@@ -79,6 +79,7 @@ int argstr(int n, char **pp)
 
 extern int sys_chdir(void);
 extern int sys_getyear(void);
+extern int sys_get_parent_pid(void);
 extern int sys_change_file_size(void);
 extern int sys_close(void);
 extern int sys_dup(void);
@@ -123,7 +124,8 @@ static int (*syscalls[])(void) = {
     [SYS_mkdir] sys_mkdir,
     [SYS_close] sys_close,
     [SYS_getyear] sys_getyear,
-    [SYS_change_file_size] sys_change_file_size};
+    [SYS_change_file_size] sys_change_file_size,
+    [SYS_get_parent_pid] sys_get_parent_pid};
 void syscall(void)
 {
   int num;

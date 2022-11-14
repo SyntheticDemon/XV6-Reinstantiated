@@ -38,4 +38,5 @@ void* malloc(uint);
 void free(void*);
 int atoi(const char*);
 int getyear(void);
+int get_parent_pid(void);
 int change_file_size(const char* file_path ,int desired_size);
