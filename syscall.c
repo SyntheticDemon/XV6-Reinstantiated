@@ -78,6 +78,7 @@ int argstr(int n, char **pp)
 
 extern int sys_chdir(void);
 extern int sys_getyear(void);
+extern int sys_find_largest_prime_factor(void);
 extern int sys_get_parent_pid(void);
 extern int sys_change_file_size(void);
 extern int sys_close(void);
@@ -126,7 +127,9 @@ static int (*syscalls[])(void) = {
     [SYS_getyear] sys_getyear,
     [SYS_change_file_size] sys_change_file_size,
     [SYS_get_parent_pid] sys_get_parent_pid,
-    [SYS_getcallers] sys_getcallers};
+    [SYS_getcallers] sys_getcallers,
+    [SYS_find_largest_prime_factor] sys_find_largest_prime_factor};
+
 void syscall(void)
 {
   int num;
@@ -136,8 +139,9 @@ void syscall(void)
   int cpid = curproc->pid;
   if (num > 0 && num < NELEM(syscalls) && syscalls[num])
   {
+
     curproc->tf->eax = syscalls[num]();
-    add_to_call_array(cpid,num);
+    add_to_call_array(cpid, num);
   }
   else
   {

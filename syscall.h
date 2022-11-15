@@ -24,3 +24,4 @@
 #define SYS_change_file_size 23
 #define SYS_get_parent_pid 24
 #define SYS_getcallers 25
+#define SYS_find_largest_prime_factor 26

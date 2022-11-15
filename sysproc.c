@@ -131,3 +131,28 @@ int sys_get_parent_pid(void)
 {
   return myproc()->parent->pid;
 }
+
+int sys_find_largest_prime_factor(void)
+{
+  int n = myproc()->tf->esp;  
+  int dividant = 2;
+  int answer = 0, max_factor;
+  while (n != 0)
+  {
+    if (n % dividant != 0)
+    {
+      dividant = dividant + 1;
+    }
+    else
+    {
+      max_factor = n;
+      n = n / dividant;
+      if (n == 1)
+      {
+        answer = 1;
+        break;
+      }
+    }
+  }
+  return max_factor;
+}
