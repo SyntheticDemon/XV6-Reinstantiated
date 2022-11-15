@@ -134,7 +134,13 @@ int sys_get_parent_pid(void)
 
 int sys_find_largest_prime_factor(void)
 {
-  int n = myproc()->tf->esp;
+  
+  int* ip;
+  int n ;
+  uint addr =(myproc()->tf->esp) + 4;
+  struct proc *curproc = myproc();
+  *ip = *(int *)(addr);
+  n = *ip;
   int dividant = 2;
   int answer = 0, max_factor;
   while (n != 0)
