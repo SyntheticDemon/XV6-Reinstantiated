@@ -78,6 +78,11 @@ int argstr(int n, char **pp)
 
 extern int sys_chdir(void);
 extern int sys_getyear(void);
+extern int sys_change_process_queue(void);
+extern int sys_tickets_change(void);
+extern int sys_ps_aux(void);
+extern int sys_change_coef(void);
+extern int sys_change_ultra_coef(void);
 extern int sys_find_largest_prime_factor(void);
 extern int sys_get_parent_pid(void);
 extern int sys_change_file_size(void);
@@ -128,7 +133,12 @@ static int (*syscalls[])(void) = {
     [SYS_change_file_size] sys_change_file_size,
     [SYS_get_parent_pid] sys_get_parent_pid,
     [SYS_getcallers] sys_getcallers,
-    [SYS_find_largest_prime_factor] sys_find_largest_prime_factor};
+    [SYS_find_largest_prime_factor] sys_find_largest_prime_factor,
+    [SYS_ps_aux] sys_ps_aux,
+    [SYS_change_process_queue] sys_change_process_queue,
+    [SYS_tickets_change] sys_tickets_change,
+    [SYS_change_coef] sys_change_coef,
+    [SYS_change_ultra_coef] sys_change_ultra_coef};
 
 void syscall(void)
 {

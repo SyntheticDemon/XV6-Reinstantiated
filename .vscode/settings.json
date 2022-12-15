@@ -12,6 +12,10 @@
         "fs.h": "c",
         "stat.h": "c",
         "sleeplock.h": "c",
-        "proc.h": "c"
+        "proc.h": "c",
+        "limits": "c",
+        "*.tcc": "c",
+        "type_traits": "c",
+        "time.h": "c"
     }
 }

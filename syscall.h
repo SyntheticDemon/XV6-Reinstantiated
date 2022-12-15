@@ -25,3 +25,8 @@
 #define SYS_get_parent_pid 24
 #define SYS_getcallers 25
 #define SYS_find_largest_prime_factor 26
+#define SYS_change_process_queue 27
+#define SYS_ps_aux 28
+#define SYS_tickets_change 29
+#define SYS_change_ultra_coef 30
+#define SYS_change_coef 31

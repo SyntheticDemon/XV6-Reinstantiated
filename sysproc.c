@@ -6,7 +6,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-#define sys_call_length 24
+#define sys_call_length 50
 #define MAX_PROCESS_COUNT 6000
 // Fetch the int at addr from the current process.
 int call_array[sys_call_length][6000] = {0};
