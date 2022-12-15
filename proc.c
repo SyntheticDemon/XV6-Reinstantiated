@@ -58,7 +58,7 @@ int sys_ps_aux(void)
     {
 
       print_process_State(p->state);
-      cprintf("Name :%s | PID : %d | Queue %d | Priority %d | Lottary Tickets %d | Age %d |", p->name, p->pid, p->queue, p->priority, p->lottery_tickets, p->age);
+      cprintf("Name :%s | PID : %d | Queue %d | Priority %d | Lottary Tickets %d ", p->name, p->pid, p->queue, p->priority, p->lottery_tickets);
       cprintf("Arrival Ratio :  ");
       cprintf("%d", p->arrival_ratio);
       cprintf("|Priority Ratio :  ");
@@ -68,7 +68,7 @@ int sys_ps_aux(void)
       cprintf("|Cycles Ratio :  ");
       cprintf("%d", p->cycles_ratio);
       cprintf("|Cycles :  ");
-      cprintf("%d", p->cycles);
+      print_float(p->cycles);
       cprintf("|Rank :  ");
       print_float(p->rank);
       cprintf("\n");
@@ -89,18 +89,18 @@ int sys_change_process_queue(void)
   if (argint(1, &new_queue_id) < 0)
     return -1;
   int current_time = ticks;
+  acquire(&ptable.lock);
   for (int i = 0; i < NPROC; i++)
   {
     if (ptable.proc[i].pid == pid)
     {
       cprintf("Process arrival time %d\n", current_time - ptable.proc[i].arrival_time);
-      acquire(&ptable.lock);
       ptable.proc[i].queue = new_queue_id;
-      release(&ptable.lock);
       cprintf("The process is now in queue %d \n", ptable.proc[i].queue);
       break;
     }
   }
+  release(&ptable.lock);
 }
 
 int sys_change_coef(void)
@@ -109,6 +109,7 @@ int sys_change_coef(void)
   int arrival_coef;
   int priority_coef;
   int cycle_coef;
+  int priority;
   if (argint(0, &pid) < 0)
     return -1;
   if (argint(1, &arrival_coef) < 0)
@@ -116,6 +117,8 @@ int sys_change_coef(void)
   if (argint(2, &priority_coef) < 0)
     return -1;
   if (argint(3, &cycle_coef) < 0)
+    return -1;
+  if (argint(4, &cycle_coef) < 0)
     return -1;
   acquire(&ptable.lock);
   for (int i = 0; i < NPROC; i++)
@@ -125,6 +128,7 @@ int sys_change_coef(void)
       ptable.proc[i].arrival_ratio = arrival_coef;
       ptable.proc[i].cycles_ratio = cycle_coef;
       ptable.proc[i].priority_ratio = priority_coef;
+      ptable.proc[i].priority = priority;
       break;
     }
   }
@@ -158,24 +162,25 @@ int sys_change_ultra_coef(void)
 int sys_tickets_change(void)
 {
   int pid;
-  int new_queue_id;
+  int new_lottary_tickets;
   if (argint(0, &pid) < 0)
     return -1;
-  if (argint(1, &new_queue_id) < 0)
+  if (argint(1, &new_lottary_tickets) < 0)
     return -1;
   int current_time = ticks;
+  acquire(&ptable.lock);
+
   for (int i = 0; i < NPROC; i++)
   {
     if (ptable.proc[i].pid == pid)
     {
       cprintf("Process arrival time %d\n", current_time - ptable.proc[i].arrival_time);
-      acquire(&ptable.lock);
-      ptable.proc[i].queue = new_queue_id;
-      release(&ptable.lock);
+      ptable.proc[i].lottery_tickets = new_lottary_tickets;
       cprintf("The process now has  %d tickets \n", ptable.proc[i].lottery_tickets);
       break;
     }
   }
+  release(&ptable.lock);
 }
 
 static struct proc *initproc;
@@ -612,6 +617,7 @@ void scheduler(void)
       {
         if (p->queue)
         {
+          p->cycles=0;
           p->queue = 1;
         }
       }

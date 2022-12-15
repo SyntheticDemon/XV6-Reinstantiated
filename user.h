@@ -45,4 +45,4 @@ int change_file_size(const char* file_path ,int desired_size);
 int change_process_queue(int pid,int queue_id);
 int tickets_change(int pid,int tickets);
 int change_ultra_coef(int priority_coef, int arrival_ratio, int cycles_ratio);
-int change_coef(int pid, int priority_coef,int arrival_ratio,int cycles_ratio);
+int change_coef(int pid, int priority_coef,int arrival_ratio,int cycles_ratio,int priority);
