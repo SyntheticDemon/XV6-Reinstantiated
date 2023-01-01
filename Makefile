@@ -170,20 +170,17 @@ UPROGS=\
 	_echo\
 	_forktest\
 	_grep\
-	_foo\
 	_init\
 	_kill\
 	_ln\
 	_ls\
-	_prime_numbers\
+	_dining_philosophers\
+	_philosopher\
 	_ps_aux\
 	_change_file_size\
 	_get_parent_pid_test\
-	_getyear\
 	_change_coef\
 	_change_process_queue\
-	_tickets_change\
-	_kernel_analysis\
 	_mkdir\
 	_rm\
 	_sh\
@@ -261,7 +258,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c  echo.c getyear.c kernel_analysis.c change_ultra_coef.c tickets_change.c foo.c change_coef.c\
-	change_process_queue.c ps_aux.c prime_numbers.c test_get_callers.c get_parent_pid_test.c forktest.c grep.c kill.c\
+	change_process_queue.c ps_aux.c dining_philosophers.c philosopher.c  test_get_callers.c get_parent_pid_test.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
