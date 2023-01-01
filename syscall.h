@@ -30,3 +30,6 @@
 #define SYS_tickets_change 29
 #define SYS_change_ultra_coef 30
 #define SYS_change_coef 31
+#define SYS_sem_init 32
+#define SYS_sem_acquire 33
+#define SYS_sem_release 34

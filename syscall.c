@@ -89,6 +89,9 @@ extern int sys_change_file_size(void);
 extern int sys_close(void);
 extern int sys_dup(void);
 extern int sys_exec(void);
+extern int sys_sem_acquire(void);
+extern int sys_sem_init(void);
+extern int sys_sem_release(void);
 extern int sys_exit(void);
 extern int sys_fork(void);
 extern int sys_fstat(void);
@@ -138,6 +141,9 @@ static int (*syscalls[])(void) = {
     [SYS_change_process_queue] sys_change_process_queue,
     [SYS_tickets_change] sys_tickets_change,
     [SYS_change_coef] sys_change_coef,
+    [SYS_sem_init] sys_sem_init,
+    [SYS_sem_acquire] sys_sem_acquire,
+    [SYS_sem_release] sys_sem_release,
     [SYS_change_ultra_coef] sys_change_ultra_coef};
 
 void syscall(void)

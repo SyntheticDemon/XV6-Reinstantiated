@@ -16,6 +16,7 @@
         "limits": "c",
         "*.tcc": "c",
         "type_traits": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "algorithm": "c"
     }
 }
