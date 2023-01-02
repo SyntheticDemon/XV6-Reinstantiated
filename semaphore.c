@@ -16,7 +16,7 @@ int sys_sem_init(void)
     if (argint(1, &v) < 0)
         return -1;
     acquire(&sticks[i].lock);
-    // so that we are preempted during initialization
+    // so that we are not preempted during initialization
     if (sticks[i].locked == 0)
     {
         sticks[i].locked = 1;
