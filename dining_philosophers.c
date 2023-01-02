@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
   {
     // initialize semaphores
     sem_init(i, 1);
+    // since 1 philosopher can get a chopstick at a time we have to intiialize our semaphores with the 1  value (as if they are a binray semaphore indiciating if a chopstick is acquired or not )
   }
 
   for (int i = 0; i < 5; i++)
