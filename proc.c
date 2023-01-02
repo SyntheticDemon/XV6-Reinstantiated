@@ -7,72 +7,7 @@
 #include "proc.h"
 #include "spinlock.h"
 #define LOTTERY_TICKETS_BASE_DEFAULT 5
-#define CHOPSTICK_COUNT 5
 #define CYCLE_THRESHOLD 8000
-#define SEMAPHORE_COUNT 5
-struct semaphore
-{
-  int value;
-  int active;
-  struct spinlock lock;
-};
-struct semaphore semaphores[SEMAPHORE_COUNT];
-int sys_sem_init(void)
-{
-
-  int i, v;
-  cprintf("%s %d with size %d", "Initializing Semaphore on ", i, v);
-  if (argint(0, &i) < 0)
-    return -1;
-  if (argint(1, &v) < 0)
-    return -1;
-  acquire(&semaphores[i].lock);
-  if (semaphores[i].active == 0)
-  {
-    semaphores[i].active = 1;
-    semaphores[i].value = v;
-  }
-  else
-  {
-    return -1;
-  }
-  release(&semaphores[i].lock);
-  return 0;
-}
-int sys_sem_acquire(void)
-{
-  int i;
-  cprintf("%s %d", "Acquriing Semaphore on ", i);
-  if (argint(0, &i) < 0)
-    return -1;
-  acquire(&semaphores[i].lock);
-  if (semaphores[i].value >= 1)
-  {
-    semaphores[i].value = semaphores[i].value - 1;
-  }
-  else
-  {
-    while (semaphores[i].value < 1)
-    {
-      sleep(&semaphores[i], &semaphores[i].lock);
-    }
-    semaphores[i].value = semaphores[i].value - 1;
-  }
-  release(&semaphores[i].lock);
-  return 0;
-}
-int sys_sem_release(void)
-{
-  int i;
-  cprintf("%s %d", "Releasing Semaphore on ", i);
-  if (argint(0, &i) < 0)
-    return -1;
-  acquire(&semaphores[i].lock);
-  semaphores[i].value = semaphores[i].value + 1;
-  wakeup(&semaphores[i]);
-  release(&semaphores[i].lock);
-  return 0;
-}
 
 struct
 {

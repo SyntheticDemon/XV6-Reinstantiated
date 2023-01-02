@@ -17,6 +17,7 @@
         "*.tcc": "c",
         "type_traits": "c",
         "time.h": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "spinlock.h": "c"
     }
 }
